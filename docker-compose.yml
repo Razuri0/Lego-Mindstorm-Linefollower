@@ -3,7 +3,7 @@ services:
     image: rust:latest
     container_name: lego-rust
     volumes:
-      - ./:/
+      - ./:/app
     working_dir: /
     command:
       - rustup update
