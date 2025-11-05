@@ -1,0 +1,12 @@
+services:
+  rust:
+    image: rust:latest
+    container_name: lego-rust
+    volumes:
+      - ./:/
+    working_dir: /
+    command:
+      - rustup update
+      - rustup target add armv5te-unknown-linux-musleabi
+      - cargo build --target=armv5te-unknown-linux-musleabi --release
+    tty: true
