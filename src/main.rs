@@ -15,13 +15,6 @@ use pid_controller::PIDController;
 mod statemachine;
 use statemachine::*;
 
-pub enum STATE {
-    START,  // starting position until turning point
-    LINEFOLLOWING,  // following the line until barrier detection
-    BARRIER,  // waiting at the barrier
-    BARCODE,  // detecting a barcode and pushing block
-    END  // ending position and depositing ball
-}
 
 
 
@@ -29,10 +22,8 @@ pub enum STATE {
 
 
 
-// clamps a value between min and max
-fn clamp(v: i32, min: i32, max: i32) -> i32 {
-    if v < min { min } else if v > max { max } else { v }
-}
+
+
 
 
 //  "task main()" is executed at programm start
