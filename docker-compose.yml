@@ -2,11 +2,14 @@ services:
   rust:
     image: rust:latest
     container_name: lego-rust
+    user: "1000:1000"
     volumes:
       - ./:/app
     working_dir: /app
-    command: >
-      bash -c "rustup update &&
-               rustup target add armv5te-unknown-linux-musleabi &&
-               cargo build --target=armv5te-unknown-linux-musleabi --release"
+    command: > 
+              bash -c 
+              "rustup update &&
+              rustup target add armv5te-unknown-linux-musleabi &&
+              cargo build --target=armv5te-unknown-linux-musleabi --release
+              "
     tty: true
