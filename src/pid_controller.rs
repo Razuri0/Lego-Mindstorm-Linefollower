@@ -19,6 +19,7 @@ pub struct PIDController {
 
 impl PIDController {
     pub fn new(kp: f32, ki: f32, kd: f32, left_light_sensor: LightSensor, right_light_sensor: LightSensor, left_motor: LargeMotor, right_motor: LargeMotor) -> Self {
+        
         PIDController {
             kp,
             ki,
@@ -31,7 +32,7 @@ impl PIDController {
             integral: 0.0,
             current_time: Self::current_time_millis(),
             last_time: Self::current_time_millis(),
-        };
+        }
 
     }
 
@@ -57,13 +58,41 @@ impl PIDController {
         self.current_time = Self::current_time_millis();
         let dt = (self.current_time - self.last_time) as f32 / 1000.0; // in seconds
         self.last_time = self.current_time;
-        let error: f32 = (self.left_light_sensor.get_light_intensity()? - self.right_light_sensor.get_light_intensity()?) as f32;
+        let left_sensor_value = self.left_light_sensor.get_light_intensity().expect("error reading left sensor");
+        let right_sensor_value = self.right_light_sensor.get_light_intensity().expect("error reading right sensor");
+        let error: f32 = (left_sensor_value - right_sensor_value) as f32;
         self.integral += error * dt;
         let mut derivative: f32 = 0.0;
         if dt > 0.0 {derivative = (error - self.prev_error) / dt;}
         let output: f32 = self.kp * error + self.ki * self.integral + self.kd * derivative;
         self.prev_error = error;
         output as i32
+    }
+
+    pub fn stop(&self) {
+        self.left_motor.set_duty_cycle_sp(0).expect("left motor problems");
+        self.right_motor.set_duty_cycle_sp(0).expect("right motor problems");
+    }
+
+    pub fn clone(&self) -> Self {
+        PIDController {
+            kp: self.kp,
+            ki: self.ki,
+            kd: self.kd,
+            left_light_sensor: self.left_light_sensor.clone(),
+            right_light_sensor: self.right_light_sensor.clone(),
+            left_motor: self.left_motor.clone(),
+            right_motor: self.right_motor.clone(),
+            prev_error: self.prev_error,
+            integral: self.integral,
+            current_time: self.current_time,
+            last_time: self.last_time,
+        }
+    }
+
+    pub fn turning(&mut self) {
+            self.left_motor.set_duty_cycle_sp(-100).expect("left motor problems");
+            self.right_motor.set_duty_cycle_sp(100).expect("right motor problems");
     }
 
     fn current_time_millis() -> i64 {
