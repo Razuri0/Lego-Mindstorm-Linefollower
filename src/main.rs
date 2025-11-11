@@ -44,31 +44,31 @@ fn main() -> Ev3Result<()> {
 
     // for detecting black line after turning
     let threshold: f32 = 100.0;
-    let mut current_light_value: f32 = 0.0;
+    let mut current_light_value: f32;
     let mut old_light_value: f32 = 0.0 ;
 
     loop {
         state_machine.execute_state();
 
         // follow line until hitting the wall
-        if state_machine.current_state == STATE::START && us_sensor.get_distance().expect("cannot read ultrasonic sensor") < 15 {
+        if state_machine.current_state == STATE::START && us_sensor.get_distance()? < 15 {
             state_machine.set_state(STATE::TURNING);
 
         // turning around until right sensor touches black line
         } else if state_machine.current_state == STATE::TURNING {
             // detect black line after turning
-            current_light_value = light_right.get_reflected_light_intensity().expect("cannot read light sensor");
+            current_light_value = light_right.get_reflected_light_intensity()?;
             if current_light_value - old_light_value > threshold {
                 state_machine.set_state(STATE::BARRIER);
             }
             old_light_value = current_light_value;
 
         // follow line until ultrasonic detects the barrier
-        } else if state_machine.current_state == STATE::BARRIER && us_sensor.get_distance().expect("cannot read ultrasonic sensor") < 10 {
+        } else if state_machine.current_state == STATE::BARRIER && us_sensor.get_distance()? < 10 {
             state_machine.set_state(STATE::WAIT);
 
         // wait until barrier goes away
-        } else if state_machine.current_state == STATE::WAIT && us_sensor.get_distance().expect("cannot read ultrasonic sensor") > 20 {
+        } else if state_machine.current_state == STATE::WAIT && us_sensor.get_distance()? > 20 {
             state_machine.set_state(STATE::BARCODE);
 
         // TODO

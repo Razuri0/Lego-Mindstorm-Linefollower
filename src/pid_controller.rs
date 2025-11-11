@@ -42,8 +42,8 @@ impl PIDController {
         loop {
             motor_power = self.compute();
 
-            self.left_motor.set_duty_cycle_sp(self.clamp(100 + motor_power, -100, 100));
-            self.right_motor.set_duty_cycle_sp(self.clamp(100 - motor_power, -100, 100));
+            self.left_motor.set_duty_cycle_sp(self.clamp(100 + motor_power, -100, 100)).expect("left motor problems");
+            self.right_motor.set_duty_cycle_sp(self.clamp(100 - motor_power, -100, 100)).expect("right motor problems");
         }
 
     }
