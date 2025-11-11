@@ -1,4 +1,3 @@
-use ev3dev_lang_rust::Ev3Result;
 use ev3dev_lang_rust::sensors::LightSensor;
 use ev3dev_lang_rust::motors::LargeMotor;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -37,8 +36,8 @@ impl PIDController {
     }
 
     pub fn drive(&mut self) {
-        self.left_motor.run_direct();
-        self.right_motor.run_direct();
+        self.left_motor.run_direct().expect("error inizialising left motor");
+        self.right_motor.run_direct().expect("error inizialising right motor");
         let mut motor_power: i32;
         loop {
             motor_power = self.compute();
@@ -72,22 +71,6 @@ impl PIDController {
     pub fn stop(&self) {
         self.left_motor.set_duty_cycle_sp(0).expect("left motor problems");
         self.right_motor.set_duty_cycle_sp(0).expect("right motor problems");
-    }
-
-    pub fn clone(&self) -> Self {
-        PIDController {
-            kp: self.kp,
-            ki: self.ki,
-            kd: self.kd,
-            left_light_sensor: self.left_light_sensor.clone(),
-            right_light_sensor: self.right_light_sensor.clone(),
-            left_motor: self.left_motor.clone(),
-            right_motor: self.right_motor.clone(),
-            prev_error: self.prev_error,
-            integral: self.integral,
-            current_time: self.current_time,
-            last_time: self.last_time,
-        }
     }
 
     pub fn turning(&mut self) {

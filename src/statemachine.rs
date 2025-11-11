@@ -1,6 +1,4 @@
 use crate::pid_controller::PIDController;
-use std::thread;
-
 pub enum STATE {
     START,      // starting position until turning point
     TURNING,    // turning at the turning point
@@ -8,19 +6,6 @@ pub enum STATE {
     WAIT,       // waiting for barrier to open
     BARCODE,    // driving and detecting a barcode and pushing block
     END         // ending position and depositing ball
-}
-
-impl STATE {
-    pub fn clone(&self) -> STATE {
-        match self {
-            STATE::START => STATE::START,
-            STATE::TURNING => STATE::TURNING,
-            STATE::BARRIER => STATE::BARRIER,
-            STATE::WAIT => STATE::WAIT,
-            STATE::BARCODE => STATE::BARCODE,
-            STATE::END => STATE::END,
-        }
-    }
 }
 
 impl PartialEq for STATE {
@@ -84,13 +69,6 @@ impl StateMachine {
         };
     }
 
-    pub fn clone(&self) -> Self {
-        StateMachine {
-            current_state: self.current_state.clone(),
-            pid_controller: self.pid_controller.clone(),
-        }
-    }
-
     fn drive(&mut self) {
         self.pid_controller.drive();
     }
@@ -102,7 +80,6 @@ impl StateMachine {
     fn turning(&mut self) {
         // implement turning logic here
         self.pid_controller.turning();
-        todo!("implement turning logic")
     }
 
 

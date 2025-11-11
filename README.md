@@ -1,19 +1,33 @@
 # Lego-Mindstorm-Linefollower
 
+## debug
+
+> debug build
+
+```sh
+docker compose up -d rust
+docker compose exec rust bash -c "
+ cargo build --target=armv5te-unknown-linux-musleabi"
+```
+
 ## build
 
 > Build the project via docker-compose
 
 ```sh
-docker compose up -d
+docker compose up -d rust
+docker compose exec rust bash -c "
+ cargo build --target=armv5te-unknown-linux-musleabi --release"
 ```
 
 ## clean
 
-> simple clean by deleting \target
+> cleans cargo and deletes container
 
 ```sh
-rm -rf target
+docker compose up -d rust
+docker compose exec rust cargo clean
+docker compose down
 ```
 
 ## readme
