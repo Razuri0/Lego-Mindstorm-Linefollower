@@ -7,7 +7,11 @@ services:
       - ./:/app
     working_dir: /app
     command: bash -c "
+<<<<<<< HEAD
               rustup update &&
               rustup target add armv5te-unknown-linux-musleabi
+=======
+              tail -f /dev/null
+>>>>>>> 3b821174fbb6d3bf98d9cec8fc9a88c313ce6c99
               "
     tty: true
